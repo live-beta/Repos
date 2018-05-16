@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText mSearchBoxEditText;
     private TextView mUrlDisplayTextView;
     private TextView mSearchResultsTextView;
+    private TextView errorMessageTextView;
+    private ProgressBar mLoadingIndicator;
 
 
     @Override
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         mSearchBoxEditText= findViewById(R.id.et_search_results_json);
         mUrlDisplayTextView = findViewById(R.id.tv_display_url);
         mSearchResultsTextView = findViewById(R.id.tv_show_repos);
+        errorMessageTextView = findViewById(R.id.tv_error_message_display);
+        mLoadingIndicator = findViewById(R.id.progress_bar);
 
     }
 
@@ -41,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class GithubQueryTask extends AsyncTask<URL,Void,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
 
         @Override
         protected String doInBackground(URL... params){
@@ -57,10 +70,23 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String githubSearchResults){
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
             if(githubSearchResults != null && !githubSearchResults.equals("")){
+                showJsonDataView();
                 mSearchResultsTextView.setText(githubSearchResults);
+            }else{
+                showErrorMessage();
             }
         }
+    }
+
+    private void showJsonDataView() {
+        errorMessageTextView.setVisibility(View.INVISIBLE);
+        mSearchResultsTextView.setVisibility(View.VISIBLE);
+    }
+    private void showErrorMessage() {
+        mSearchResultsTextView.setVisibility(View.INVISIBLE);
+        errorMessageTextView.setVisibility(View.VISIBLE);
     }
 
 
@@ -75,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
         int itemSelected = item.getItemId();
         if (itemSelected == R.id.action_search){
-            Context context = MainActivity.this;
             makeGithubSearchQuery();
+            return true;
         }
         return super.onOptionsItemSelected(item);
 
