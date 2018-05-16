@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.URL;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +31,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    void makeGithubSearchQuery(){
+        String gitHubQuery = mSearchBoxEditText.getText().toString();
+        URL gitHubSearchURL = NetworkUtils.buildUrl(gitHubQuery);
+        mUrlDisplayTextView.setText(gitHubSearchURL.toString());
+
+        String githubSearchResults = null;
+
+        try{
+            githubSearchResults = NetworkUtils.getResposeFromHttp(gitHubSearchURL);
+            mSearchResultsTextView.setText(githubSearchResults);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main, menu);
@@ -36,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-        //action code goes here
         int itemSelected = item.getItemId();
         if (itemSelected == R.id.action_search){
             Context context = MainActivity.this;
-            Toast.makeText(context,"Search Selected",Toast.LENGTH_LONG).show();
+            makeGithubSearchQuery();
         }
         return super.onOptionsItemSelected(item);
 
