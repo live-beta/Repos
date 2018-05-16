@@ -1,6 +1,7 @@
 package com.books.sam.repos;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -35,17 +36,32 @@ public class MainActivity extends AppCompatActivity {
         String gitHubQuery = mSearchBoxEditText.getText().toString();
         URL gitHubSearchURL = NetworkUtils.buildUrl(gitHubQuery);
         mUrlDisplayTextView.setText(gitHubSearchURL.toString());
+        new GithubQueryTask().execute(gitHubSearchURL);
 
-        String githubSearchResults = null;
-
-        try{
-            githubSearchResults = NetworkUtils.getResposeFromHttp(gitHubSearchURL);
-            mSearchResultsTextView.setText(githubSearchResults);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
+    public class GithubQueryTask extends AsyncTask<URL,Void,String> {
+
+        @Override
+        protected String doInBackground(URL... params){
+            URL searchUrl = params[0];
+            String githubSearchResults = null;
+
+            try{
+                githubSearchResults = NetworkUtils.getResposeFromHttp(searchUrl);
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            return githubSearchResults;
+        }
+        @Override
+        protected void onPostExecute(String githubSearchResults){
+            if(githubSearchResults != null && !githubSearchResults.equals("")){
+                mSearchResultsTextView.setText(githubSearchResults);
+            }
+        }
+    }
 
 
 
