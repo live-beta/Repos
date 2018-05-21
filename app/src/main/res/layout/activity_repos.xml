@@ -23,20 +23,20 @@
         android:hint="url will show up here after clicking search"
 
         />
+
+<android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:id="@+id/rv_repos">
+
+
+
+</android.support.v7.widget.RecyclerView>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_show_repos"
-        android:textSize="16sp"
-        />
-</ScrollView>
         <TextView
             android:id="@+id/tv_error_message_display"
             android:textSize="22sp"
